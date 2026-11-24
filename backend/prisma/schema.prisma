@@ -1,0 +1,54 @@
+// Prisma Schema - Multi-Cam Recorder
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  controller
+  remote
+}
+
+enum UserStatus {
+  pending
+  active
+  locked
+}
+
+model User {
+  id           String     @id @db.VarChar(20)
+  firstName    String     @map("first_name") @db.VarChar(50)
+  lastName     String     @map("last_name") @db.VarChar(50)
+  email        String     @unique @db.VarChar(100)
+  phone        String     @unique @db.Char(10)
+  passwordHash String     @map("password_hash") @db.VarChar(100)
+  role         UserRole   @default(remote)
+  status       UserStatus @default(pending)
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  devices Device[]
+
+  @@map("users")
+}
+
+model Device {
+  id         String   @id @db.VarChar(20)
+  deviceUuid String   @unique @map("device_uuid") @db.VarChar(64)
+  userId     String?  @map("user_id") @db.VarChar(20)
+  deviceType Int      @map("device_type") @db.SmallInt
+  deviceName String   @map("device_name") @db.VarChar(50)
+  cameraName String   @map("camera_name") @db.VarChar(30)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("devices")
+}

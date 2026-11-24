@@ -1,0 +1,16 @@
+import type { NextFunction, Request, RequestHandler, Response } from 'express';
+
+export type AsyncRouteHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => Promise<unknown>;
+
+/**
+ * Bọc controller/middleware bất đồng bộ để tự động chuyển mọi ngoại lệ sang `errorHandler`.
+ */
+export function asyncHandler(fn: AsyncRouteHandler): RequestHandler {
+  return (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
