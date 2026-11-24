@@ -1,0 +1,29 @@
+{
+  "name": "multicam-recorder",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "backend",
+    "app"
+  ],
+  "scripts": {
+    "build:shared": "npm --workspace=shared run build",
+    "dev:backend": "npm --workspace=shared run build && npm --workspace=backend run dev",
+    "dev:web": "npm --workspace=app run web",
+    "dev:android": "npm --workspace=app run android",
+    "test:backend": "npm --workspace=backend test",
+    "typecheck": "npm --workspace=shared run typecheck && npm --workspace=backend run typecheck && npm --workspace=app run typecheck",
+    "lint": "eslint shared/src backend/src backend/prisma backend/tests app/app app/src app/app.config.ts",
+    "format": "prettier --write \"shared/src/**/*.ts\" \"backend/{src,prisma,tests}/**/*.ts\" \"app/{app,src}/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"shared/src/**/*.ts\" \"backend/{src,prisma,tests}/**/*.ts\" \"app/{app,src}/**/*.{ts,tsx}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.10.1",
+    "typescript-eslint": "^8.74.0"
+  }
+}
